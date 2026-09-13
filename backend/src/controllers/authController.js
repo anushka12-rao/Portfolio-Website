@@ -1,10 +1,28 @@
-﻿import { verifyCredentials } from '../services/authService.js';
+import { verifyCredentials } from '../services/authService.js';
+import { isDBConnected } from '../config/database.js';
+import { config } from '../config/environment.js';
 import { logger } from '../utils/logger.js';
 
 export const login = async (req, res, next) => {
   try {
     const { email, password } = req.body;
-    const user = await verifyCredentials(email, password);
+    let user = null;
+
+    if (isDBConnected()) {
+      user = await verifyCredentials(email, password);
+    } else {
+      // In dev fallback mode when MongoDB is not running locally
+      if (
+        email.toLowerCase().trim() === config.adminEmail.toLowerCase().trim() &&
+        password === config.adminPassword
+      ) {
+        user = {
+          _id: 'admin_dev_id_001',
+          email: config.adminEmail,
+          role: 'admin'
+        };
+      }
+    }
 
     if (!user) {
       return res.status(401).json({ error: 'Invalid email or password.' });
@@ -12,6 +30,7 @@ export const login = async (req, res, next) => {
 
     // Set user ID in session
     req.session.userId = user._id;
+    req.session.userEmail = user.email;
     req.session.userRole = user.role;
 
     logger.info(`Successful login: ${user.email} (${user.role})`);

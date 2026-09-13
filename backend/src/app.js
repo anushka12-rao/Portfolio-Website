@@ -1,9 +1,10 @@
-﻿import express from 'express';
+import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import cookieParser from 'cookie-parser';
 import session from 'express-session';
 import MongoStore from 'connect-mongo';
+import mongoose from 'mongoose';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
@@ -41,7 +42,6 @@ const allowedOrigins = [
 app.use(
   cors({
     origin: (origin, callback) => {
-      // Allow requests with no origin (like mobile apps, curl, or Postman)
       if (!origin) return callback(null, true);
       if (allowedOrigins.includes(origin)) {
         return callback(null, true);
@@ -60,33 +60,35 @@ app.use(cookieParser());
 app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
 // Session configuration
-const sessionStore = MongoStore.create({
-  mongoUrl: config.mongodbUri,
-  collectionName: 'sessions',
-  ttl: 60 * 60 * 24 * 7 // 7 days
-});
+const sessionOptions = {
+  secret: config.sessionSecret,
+  resave: false,
+  saveUninitialized: false,
+  cookie: getSessionCookieConfig()
+};
 
-// Avoid crashes if MongoStore loses connection temporarily
-sessionStore.on('error', (err) => {
-  console.warn('[SESSION STORE] Warning: MongoDB session store error:', err.message);
-});
+// Use MongoStore if Mongoose is connected to MongoDB
+if (mongoose.connection.readyState === 1) {
+  try {
+    sessionOptions.store = MongoStore.create({
+      client: mongoose.connection.getClient(),
+      collectionName: 'sessions',
+      ttl: 60 * 60 * 24 * 7
+    });
+  } catch (e) {
+    // MemoryStore fallback
+  }
+}
 
-app.use(
-  session({
-    secret: config.sessionSecret,
-    resave: false,
-    saveUninitialized: false,
-    store: sessionStore,
-    cookie: getSessionCookieConfig()
-  })
-);
+app.use(session(sessionOptions));
 
 // Health check
 app.get('/api/health', (req, res) => {
   res.json({
     status: 'healthy',
     timestamp: new Date().toISOString(),
-    environment: config.nodeEnv
+    environment: config.nodeEnv,
+    database: mongoose.connection.readyState === 1 ? 'connected' : 'dev-mode'
   });
 });
 

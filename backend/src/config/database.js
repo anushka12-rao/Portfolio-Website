@@ -1,4 +1,4 @@
-﻿import mongoose from 'mongoose';
+import mongoose from 'mongoose';
 import { config } from './environment.js';
 import { logger } from '../utils/logger.js';
 
@@ -9,15 +9,14 @@ export const connectDB = async () => {
 
   try {
     const conn = await mongoose.connect(config.mongodbUri, {
-      serverSelectionTimeoutMS: 5000,
+      serverSelectionTimeoutMS: 2500,
     });
 
     isConnected = conn.connections[0].readyState === 1;
     logger.info(`MongoDB Connected successfully: ${conn.connection.host}`);
   } catch (error) {
-    logger.error(`MongoDB Connection Error: ${error.message}`);
-    logger.warn(`Ensure MongoDB is running or MONGODB_URI is properly set in backend/.env`);
-    // Do not terminate process immediately in dev so health checks can still report db status
+    logger.warn(`MongoDB not detected on ${config.mongodbUri} (${error.message}).`);
+    logger.info(`Active in Dev Mode with in-memory state. To connect to Cloud MongoDB, add your Atlas URI to backend/.env.`);
   }
 };
 
@@ -30,11 +29,8 @@ export const disconnectDB = async () => {
 
 mongoose.connection.on('disconnected', () => {
   isConnected = false;
-  logger.warn('MongoDB connection lost. Attempting reconnect...');
 });
 
-export const getDBStatus = () => {
-  const state = mongoose.connection.readyState;
-  const states = ['Disconnected', 'Connected', 'Connecting', 'Disconnecting'];
-  return states[state] || 'Unknown';
+export const isDBConnected = () => {
+  return mongoose.connection.readyState === 1;
 };
