@@ -2,9 +2,23 @@
 dotenv.config();
 
 import app from './app.js';
+import { config } from './config/environment.js';
+import { connectDB } from './config/database.js';
+import { logger } from './utils/logger.js';
 
-const PORT = process.env.PORT || 5000;
+// Connect to database
+connectDB();
 
-app.listen(PORT, () => {
-  console.log(`Portfolio CMS Backend running on port ${PORT}`);
+const server = app.listen(config.port, () => {
+  logger.info(`Portfolio CMS Backend server running on port ${config.port} [${config.nodeEnv}]`);
+  logger.info(`Client URL allowed: ${config.clientUrl}`);
+});
+
+// Graceful shutdown
+process.on('SIGTERM', () => {
+  logger.info('SIGTERM received. Shutting down gracefully...');
+  server.close(() => {
+    logger.info('Server closed');
+    process.exit(0);
+  });
 });
