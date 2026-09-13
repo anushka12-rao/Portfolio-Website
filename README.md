@@ -1,4 +1,4 @@
-# Portfolio CMS (`portfolio-cms`)
+# Portfolio CMS (`portfolio-website`)
 
 A production-grade, full-stack developer portfolio and Content Management System (CMS) engineered with **React**, **Vite**, **Tailwind CSS**, **Framer Motion**, **Node.js/Express**, and **MongoDB/Mongoose**.
 
