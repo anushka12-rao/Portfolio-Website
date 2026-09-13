@@ -1,9 +1,22 @@
-﻿import React, { useMemo } from 'react';
-import { Cpu, Terminal, Sparkles, Layers } from 'lucide-react';
+﻿import React, { useState, useEffect, useMemo } from 'react';
+import { Terminal } from 'lucide-react';
 import TechCard from '../../components/technology/TechCard';
+import { technologyService } from '../../services/technologyService';
 import { mockTechnologies } from '../../utils/mockData';
 
-export default function TechStack({ technologies = mockTechnologies }) {
+export default function TechStack() {
+  const [technologies, setTechnologies] = useState(mockTechnologies);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    technologyService.getPublicTechnologies()
+      .then((data) => {
+        if (data && data.length > 0) setTechnologies(data);
+      })
+      .catch((err) => console.warn('Using default technologies:', err))
+      .finally(() => setLoading(false));
+  }, []);
+
   const visibleTech = useMemo(() => {
     return technologies
       .filter((t) => t.visible !== false)
@@ -14,7 +27,6 @@ export default function TechStack({ technologies = mockTechnologies }) {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16 space-y-16">
-      {/* Header */}
       <div className="max-w-3xl space-y-4">
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-teal-500/10 border border-teal-500/20 text-teal-400 text-xs font-semibold uppercase tracking-wider">
           <Terminal className="w-3.5 h-3.5" />
@@ -28,7 +40,6 @@ export default function TechStack({ technologies = mockTechnologies }) {
         </p>
       </div>
 
-      {/* Categorized Grids */}
       <div className="space-y-12">
         {categories.map((cat) => {
           const catTech = visibleTech.filter(

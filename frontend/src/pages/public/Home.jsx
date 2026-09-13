@@ -1,28 +1,53 @@
-﻿import React from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Code2, Sparkles, Award, ExternalLink, Terminal, ChevronRight } from 'lucide-react';
+import { ArrowRight, Code2, Sparkles, Award, Terminal, ChevronRight } from 'lucide-react';
 import Button from '../../components/common/Button';
-import Badge from '../../components/common/Badge';
 import ProjectCard from '../../components/project/ProjectCard';
 import TechCard from '../../components/technology/TechCard';
 import AchievementCard from '../../components/achievement/AchievementCard';
+import { profileService } from '../../services/profileService';
+import { projectService } from '../../services/projectService';
+import { technologyService } from '../../services/technologyService';
+import { achievementService } from '../../services/achievementService';
 import { mockProfile, mockProjects, mockTechnologies, mockAchievements } from '../../utils/mockData';
 
-export default function Home({
-  profile = mockProfile,
-  projects = mockProjects,
-  technologies = mockTechnologies,
-  achievements = mockAchievements
-}) {
+export default function Home() {
+  const [profile, setProfile] = useState(mockProfile);
+  const [projects, setProjects] = useState(mockProjects);
+  const [technologies, setTechnologies] = useState(mockTechnologies);
+  const [achievements, setAchievements] = useState(mockAchievements);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [profData, projData, techData, achData] = await Promise.allSettled([
+          profileService.getPublicProfile(),
+          projectService.getPublicProjects(),
+          technologyService.getPublicTechnologies(),
+          achievementService.getPublicAchievements()
+        ]);
+
+        if (profData.status === 'fulfilled' && profData.value) setProfile(profData.value);
+        if (projData.status === 'fulfilled' && projData.value?.length > 0) setProjects(projData.value);
+        if (techData.status === 'fulfilled' && techData.value?.length > 0) setTechnologies(techData.value);
+        if (achData.status === 'fulfilled' && achData.value?.length > 0) setAchievements(achData.value);
+      } catch (err) {
+        console.warn('API data fetch error, using defaults:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
+
   const featuredProjects = projects.filter((p) => p.featured).slice(0, 3);
   const previewTech = technologies.slice(0, 8);
   const previewAchievements = achievements.slice(0, 2);
 
   return (
     <div className="space-y-24 pb-20">
-      {/* Hero Section */}
       <section className="relative overflow-hidden pt-12 md:pt-20 lg:pt-28">
-        {/* Glow ambient backgrounds */}
         <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[550px] h-[350px] bg-teal-500/10 blur-[130px] rounded-full pointer-events-none" />
         <div className="absolute top-1/3 left-1/4 -translate-y-1/2 w-[300px] h-[300px] bg-cyan-500/10 blur-[120px] rounded-full pointer-events-none" />
 
@@ -61,7 +86,6 @@ export default function Home({
               )}
             </div>
 
-            {/* Quick stats strip */}
             <div className="mt-14 grid grid-cols-2 sm:grid-cols-4 gap-6 pt-10 border-t border-slate-800/80">
               {(profile?.stats || mockProfile.stats).map((stat, i) => (
                 <div key={i} className="space-y-1">
@@ -74,7 +98,6 @@ export default function Home({
         </div>
       </section>
 
-      {/* Featured Projects Section */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-10 gap-4">
           <div>
@@ -100,7 +123,6 @@ export default function Home({
         </div>
       </section>
 
-      {/* Tech Stack Preview Section */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="p-8 sm:p-12 rounded-3xl bg-slate-900/50 border border-slate-800">
           <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-8 gap-4">
@@ -128,7 +150,6 @@ export default function Home({
         </div>
       </section>
 
-      {/* Achievements Preview Section */}
       {previewAchievements.length > 0 && (
         <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-10 gap-4">
@@ -156,7 +177,6 @@ export default function Home({
         </section>
       )}
 
-      {/* CTA Banner */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-teal-950/70 via-slate-900 to-slate-900 border border-teal-500/30 p-8 sm:p-14 text-center">
           <div className="max-w-2xl mx-auto space-y-4">

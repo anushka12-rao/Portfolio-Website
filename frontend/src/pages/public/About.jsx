@@ -1,13 +1,23 @@
-﻿import React from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { User, Mail, Github, Linkedin, FileText, CheckCircle2, ArrowRight } from 'lucide-react';
+import { User, Mail, Github, Linkedin, FileText, CheckCircle2 } from 'lucide-react';
 import Button from '../../components/common/Button';
+import { profileService } from '../../services/profileService';
 import { mockProfile } from '../../utils/mockData';
 
-export default function About({ profile = mockProfile }) {
+export default function About() {
+  const [profile, setProfile] = useState(mockProfile);
+
+  useEffect(() => {
+    profileService.getPublicProfile()
+      .then((data) => {
+        if (data) setProfile(data);
+      })
+      .catch((err) => console.warn('Using default profile:', err));
+  }, []);
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16 space-y-16">
-      {/* Intro Header */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
         <div className="lg:col-span-8 space-y-6">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-teal-500/10 border border-teal-500/20 text-teal-400 text-xs font-semibold uppercase tracking-wider">
@@ -48,7 +58,6 @@ export default function About({ profile = mockProfile }) {
           </div>
         </div>
 
-        {/* Profile Card / Avatar */}
         <div className="lg:col-span-4">
           <div className="p-6 rounded-3xl bg-slate-900 border border-slate-800 space-y-6">
             <div className="aspect-square w-full rounded-2xl overflow-hidden bg-slate-950">
@@ -98,7 +107,6 @@ export default function About({ profile = mockProfile }) {
         </div>
       </div>
 
-      {/* Engineering Principles */}
       <div className="pt-8 border-t border-slate-800">
         <h2 className="text-2xl font-bold text-white mb-8">Core Engineering Principles</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">

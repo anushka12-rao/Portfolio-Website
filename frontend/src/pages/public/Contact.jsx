@@ -1,12 +1,27 @@
-﻿import React from 'react';
-import { Mail, MapPin, Send, Github, Linkedin, MessageSquare } from 'lucide-react';
+﻿import React, { useState, useEffect } from 'react';
+import { Mail, MapPin, Github, Linkedin, MessageSquare } from 'lucide-react';
 import ContactForm from '../../components/contact/ContactForm';
+import { profileService } from '../../services/profileService';
+import { messageService } from '../../services/messageService';
 import { mockProfile } from '../../utils/mockData';
 
-export default function Contact({ profile = mockProfile, onSendMessage }) {
+export default function Contact() {
+  const [profile, setProfile] = useState(mockProfile);
+
+  useEffect(() => {
+    profileService.getPublicProfile()
+      .then((data) => {
+        if (data) setProfile(data);
+      })
+      .catch((err) => console.warn('Using default profile:', err));
+  }, []);
+
+  const handleSendMessage = async (formData) => {
+    return await messageService.sendMessage(formData);
+  };
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16 space-y-12">
-      {/* Header */}
       <div className="max-w-3xl space-y-4">
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-teal-500/10 border border-teal-500/20 text-teal-400 text-xs font-semibold uppercase tracking-wider">
           <MessageSquare className="w-3.5 h-3.5" />
@@ -21,7 +36,6 @@ export default function Contact({ profile = mockProfile, onSendMessage }) {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
-        {/* Contact Info Sidebar */}
         <div className="lg:col-span-5 space-y-8">
           <div className="p-8 rounded-3xl bg-slate-900 border border-slate-800 space-y-6">
             <h2 className="text-xl font-bold text-white">Direct Channels</h2>
@@ -85,14 +99,13 @@ export default function Contact({ profile = mockProfile, onSendMessage }) {
           </div>
         </div>
 
-        {/* Contact Form */}
         <div className="lg:col-span-7">
           <div className="p-8 sm:p-10 rounded-3xl bg-slate-900 border border-slate-800">
             <h2 className="text-xl font-bold text-white mb-2">Send a Message</h2>
             <p className="text-slate-400 text-sm mb-6">
               Messages are routed directly to the admin dashboard and database.
             </p>
-            <ContactForm onSubmitMessage={onSendMessage} />
+            <ContactForm onSubmitMessage={handleSendMessage} />
           </div>
         </div>
       </div>

@@ -1,9 +1,22 @@
-﻿import React, { useMemo } from 'react';
-import { Award, Trophy, ShieldCheck } from 'lucide-react';
+﻿import React, { useState, useEffect, useMemo } from 'react';
+import { Trophy } from 'lucide-react';
 import AchievementCard from '../../components/achievement/AchievementCard';
+import { achievementService } from '../../services/achievementService';
 import { mockAchievements } from '../../utils/mockData';
 
-export default function Achievements({ achievements = mockAchievements }) {
+export default function Achievements() {
+  const [achievements, setAchievements] = useState(mockAchievements);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    achievementService.getPublicAchievements()
+      .then((data) => {
+        if (data && data.length > 0) setAchievements(data);
+      })
+      .catch((err) => console.warn('Using default achievements:', err))
+      .finally(() => setLoading(false));
+  }, []);
+
   const sortedAchievements = useMemo(() => {
     return [...achievements]
       .filter((a) => a.visible !== false)
@@ -12,7 +25,6 @@ export default function Achievements({ achievements = mockAchievements }) {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16 space-y-12">
-      {/* Header */}
       <div className="max-w-3xl space-y-4">
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-teal-500/10 border border-teal-500/20 text-teal-400 text-xs font-semibold uppercase tracking-wider">
           <Trophy className="w-3.5 h-3.5" />
@@ -26,7 +38,6 @@ export default function Achievements({ achievements = mockAchievements }) {
         </p>
       </div>
 
-      {/* List / Cards */}
       <div className="space-y-6">
         {sortedAchievements.map((achievement) => (
           <AchievementCard
