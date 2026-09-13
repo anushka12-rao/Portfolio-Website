@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Mail, MapPin, Github, Linkedin, MessageSquare } from 'lucide-react';
 import ContactForm from '../../components/contact/ContactForm';
 import { profileService } from '../../services/profileService';
@@ -63,7 +63,7 @@ export default function Contact() {
                 <div>
                   <p className="text-xs text-slate-500 font-medium">Location</p>
                   <p className="text-sm font-semibold text-slate-200">
-                    San Francisco, California (Available worldwide)
+                    {profile?.location || 'San Francisco, CA / Remote'}
                   </p>
                 </div>
               </div>

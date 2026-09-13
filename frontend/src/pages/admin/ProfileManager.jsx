@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Save, CheckCircle2, AlertCircle } from 'lucide-react';
+import { Save, CheckCircle2, AlertCircle, MapPin } from 'lucide-react';
 import Button from '../../components/common/Button';
 import { profileService } from '../../services/profileService';
 
@@ -8,6 +8,7 @@ export default function ProfileManager() {
     name: '',
     headline: '',
     bio: '',
+    location: '',
     email: '',
     github: '',
     linkedin: '',
@@ -27,6 +28,7 @@ export default function ProfileManager() {
             name: data.name || '',
             headline: data.headline || '',
             bio: data.bio || '',
+            location: data.location || '',
             email: data.email || '',
             github: data.github || '',
             linkedin: data.linkedin || '',
@@ -61,7 +63,7 @@ export default function ProfileManager() {
       <div>
         <h1 className="text-2xl font-extrabold text-white tracking-tight">Profile & Bio Editor</h1>
         <p className="text-slate-400 text-sm mt-0.5">
-          Update the personal introduction, headline, social media handles, and resume URL displayed across the public portfolio.
+          Update the personal introduction, location/region, headline, social media handles, and resume URL displayed across the public portfolio.
         </p>
       </div>
 
@@ -93,11 +95,28 @@ export default function ProfileManager() {
               required
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-              placeholder="e.g. Alex Morgan"
+              placeholder="e.g. Anushka Rao"
               className="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-white text-sm focus:outline-none focus:border-teal-500"
             />
           </div>
 
+          <div>
+            <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">
+              Location / Region
+            </label>
+            <div className="relative">
+              <input
+                type="text"
+                value={formData.location}
+                onChange={(e) => setFormData({ ...formData, location: e.target.value })}
+                placeholder="e.g. San Francisco, CA / Remote or Bengaluru, India"
+                className="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-white text-sm focus:outline-none focus:border-teal-500"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
           <div>
             <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">
               Public Contact Email
@@ -106,7 +125,20 @@ export default function ProfileManager() {
               type="email"
               value={formData.email}
               onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-              placeholder="alex@example.com"
+              placeholder="anushkarao.cse@gmail.com"
+              className="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-white text-sm focus:outline-none focus:border-teal-500"
+            />
+          </div>
+
+          <div>
+            <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">
+              Downloadable Resume URL
+            </label>
+            <input
+              type="url"
+              value={formData.resumeUrl}
+              onChange={(e) => setFormData({ ...formData, resumeUrl: e.target.value })}
+              placeholder="https://example.com/resume.pdf"
               className="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-white text-sm focus:outline-none focus:border-teal-500"
             />
           </div>
@@ -147,7 +179,7 @@ export default function ProfileManager() {
               type="url"
               value={formData.github}
               onChange={(e) => setFormData({ ...formData, github: e.target.value })}
-              placeholder="https://github.com/username"
+              placeholder="https://github.com/anushka12-rao"
               className="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-white text-sm focus:outline-none focus:border-teal-500"
             />
           </div>
@@ -164,19 +196,6 @@ export default function ProfileManager() {
               className="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-white text-sm focus:outline-none focus:border-teal-500"
             />
           </div>
-        </div>
-
-        <div>
-          <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">
-            Downloadable Resume URL
-          </label>
-          <input
-            type="url"
-            value={formData.resumeUrl}
-            onChange={(e) => setFormData({ ...formData, resumeUrl: e.target.value })}
-            placeholder="https://example.com/resume.pdf"
-            className="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-white text-sm focus:outline-none focus:border-teal-500"
-          />
         </div>
 
         <div className="pt-4 flex justify-end">

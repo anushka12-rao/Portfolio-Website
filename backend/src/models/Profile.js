@@ -1,4 +1,4 @@
-﻿import mongoose from 'mongoose';
+import mongoose from 'mongoose';
 
 const profileSchema = new mongoose.Schema(
   {
@@ -15,6 +15,11 @@ const profileSchema = new mongoose.Schema(
     bio: {
       type: String,
       default: '',
+      trim: true
+    },
+    location: {
+      type: String,
+      default: 'San Francisco, CA / Remote',
       trim: true
     },
     email: {

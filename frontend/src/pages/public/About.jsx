@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { User, Mail, Github, Linkedin, FileText, CheckCircle2 } from 'lucide-react';
 import Button from '../../components/common/Button';
@@ -71,7 +71,7 @@ export default function About() {
             <div className="space-y-3 pt-2">
               <div className="flex items-center justify-between text-sm py-2 border-b border-slate-800">
                 <span className="text-slate-500">Location</span>
-                <span className="text-slate-200 font-medium">San Francisco, CA / Remote</span>
+                <span className="text-slate-200 font-medium">{profile?.location || 'San Francisco, CA / Remote'}</span>
               </div>
               <div className="flex items-center justify-between text-sm py-2 border-b border-slate-800">
                 <span className="text-slate-500">Focus</span>

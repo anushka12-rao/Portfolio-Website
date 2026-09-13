@@ -11,6 +11,16 @@ const tests = [
     }
   },
   {
+    name: 'GET /api/profile returns 200 with location property',
+    fn: async () => {
+      const res = await request(app).get('/api/profile');
+      if (res.status !== 200) throw new Error(`Expected 200, got ${res.status}`);
+      if (!res.body.data || typeof res.body.data.location === 'undefined') {
+        throw new Error(`Expected profile to have location property`);
+      }
+    }
+  },
+  {
     name: 'GET /api/admin/projects without auth returns 401',
     fn: async () => {
       const res = await request(app).get('/api/admin/projects');

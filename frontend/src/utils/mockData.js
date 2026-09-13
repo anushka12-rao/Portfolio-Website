@@ -1,8 +1,9 @@
-﻿export const mockProfile = {
+export const mockProfile = {
   name: "Alex Morgan",
   headline: "Full-Stack Software Engineer & Distributed Systems Architect",
   bio: "Passionate engineer with 6+ years of experience engineering high-performance web applications, robust cloud microservices, and elegant developer platforms. Dedicated to writing clean, maintainable code and building delightful user experiences.",
   email: "alex.morgan@example.com",
+  location: "San Francisco, CA / Remote",
   github: "https://github.com",
   linkedin: "https://linkedin.com",
   resumeUrl: "#",
