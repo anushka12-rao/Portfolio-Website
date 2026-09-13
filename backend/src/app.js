@@ -67,13 +67,14 @@ const sessionOptions = {
   cookie: getSessionCookieConfig()
 };
 
-// Use MongoStore if Mongoose is connected to MongoDB
-if (mongoose.connection.readyState === 1) {
+// Use MongoStore when MongoDB URI is configured
+if (config.mongodbUri) {
   try {
     sessionOptions.store = MongoStore.create({
-      client: mongoose.connection.getClient(),
+      mongoUrl: config.mongodbUri,
       collectionName: 'sessions',
-      ttl: 60 * 60 * 24 * 7
+      ttl: 60 * 60 * 24 * 7,
+      autoRemove: 'native'
     });
   } catch (e) {
     // MemoryStore fallback

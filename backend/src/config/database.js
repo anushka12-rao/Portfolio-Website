@@ -9,7 +9,7 @@ export const connectDB = async () => {
 
   try {
     const conn = await mongoose.connect(config.mongodbUri, {
-      serverSelectionTimeoutMS: 2500,
+      serverSelectionTimeoutMS: 15000,
     });
 
     isConnected = conn.connections[0].readyState === 1;

@@ -1,4 +1,4 @@
-﻿import mongoose from 'mongoose';
+import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 dotenv.config();
 
@@ -38,6 +38,7 @@ const seed = async () => {
         headline: 'Full-Stack Software Engineer & Distributed Systems Architect',
         bio: 'Passionate engineer with 6+ years of experience engineering high-performance web applications, robust cloud microservices, and elegant developer platforms. Dedicated to writing clean, maintainable code and building delightful user experiences.',
         email: 'alex.morgan@example.com',
+        location: 'San Francisco, CA / Remote',
         github: 'https://github.com',
         linkedin: 'https://linkedin.com',
         resumeUrl: 'https://example.com/resume.pdf'
