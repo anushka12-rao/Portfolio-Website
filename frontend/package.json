@@ -12,7 +12,6 @@
     "axios": "^1.7.2",
     "framer-motion": "^11.3.19",
     "lucide-react": "^0.414.0",
-    "portfolio-cms": "file:..",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.25.1"

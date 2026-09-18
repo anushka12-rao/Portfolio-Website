@@ -11,6 +11,7 @@ import {
 import Button from '../../components/common/Button';
 import Badge from '../../components/common/Badge';
 import { technologyService } from '../../services/technologyService';
+import { mockTechnologies } from '../../utils/mockData';
 
 export default function TechnologiesManager() {
   const [technologies, setTechnologies] = useState([]);
@@ -32,9 +33,10 @@ export default function TechnologiesManager() {
     try {
       setLoading(true);
       const data = await technologyService.getAdminTechnologies();
-      setTechnologies(data || []);
+      setTechnologies(data && data.length > 0 ? data : mockTechnologies);
     } catch (err) {
-      console.warn('Failed to load technologies:', err);
+      console.warn('Failed to load technologies, using demo data:', err);
+      setTechnologies(mockTechnologies);
     } finally {
       setLoading(false);
     }

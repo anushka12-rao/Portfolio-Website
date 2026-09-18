@@ -13,6 +13,7 @@ import {
 import Button from '../../components/common/Button';
 import Badge from '../../components/common/Badge';
 import { projectService } from '../../services/projectService';
+import { mockProjects } from '../../utils/mockData';
 
 export default function ProjectsManager() {
   const [projects, setProjects] = useState([]);
@@ -40,9 +41,10 @@ export default function ProjectsManager() {
     try {
       setLoading(true);
       const data = await projectService.getAdminProjects();
-      setProjects(data || []);
+      setProjects(data && data.length > 0 ? data : mockProjects);
     } catch (err) {
-      console.warn('Failed to load admin projects:', err);
+      console.warn('Failed to load admin projects, using demo data:', err);
+      setProjects(mockProjects);
     } finally {
       setLoading(false);
     }

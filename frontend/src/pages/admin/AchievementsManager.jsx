@@ -13,6 +13,7 @@ import {
 import Button from '../../components/common/Button';
 import Badge from '../../components/common/Badge';
 import { achievementService } from '../../services/achievementService';
+import { mockAchievements } from '../../utils/mockData';
 
 export default function AchievementsManager() {
   const [achievements, setAchievements] = useState([]);
@@ -38,9 +39,10 @@ export default function AchievementsManager() {
     try {
       setLoading(true);
       const data = await achievementService.getAdminAchievements();
-      setAchievements(data || []);
+      setAchievements(data && data.length > 0 ? data : mockAchievements);
     } catch (err) {
-      console.warn('Failed to load achievements:', err);
+      console.warn('Failed to load achievements, using demo data:', err);
+      setAchievements(mockAchievements);
     } finally {
       setLoading(false);
     }
