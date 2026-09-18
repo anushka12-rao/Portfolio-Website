@@ -7,6 +7,11 @@ let isConnected = false;
 export const connectDB = async () => {
   if (isConnected) return;
 
+  if (!config.mongodbUri) {
+    logger.info('No MONGODB_URI configured. Running in Development In-Memory Mode.');
+    return;
+  }
+
   try {
     const conn = await mongoose.connect(config.mongodbUri, {
       serverSelectionTimeoutMS: 15000,

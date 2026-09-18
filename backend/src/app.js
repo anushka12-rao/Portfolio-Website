@@ -67,17 +67,23 @@ const sessionOptions = {
   cookie: getSessionCookieConfig()
 };
 
-// Use MongoStore when MongoDB URI is configured
-if (config.mongodbUri) {
+// Use MongoStore when a valid MongoDB URI is configured
+if (config.mongodbUri && (config.mongodbUri.startsWith('mongodb://') || config.mongodbUri.startsWith('mongodb+srv://'))) {
   try {
-    sessionOptions.store = MongoStore.create({
+    const store = MongoStore.create({
       mongoUrl: config.mongodbUri,
       collectionName: 'sessions',
       ttl: 60 * 60 * 24 * 7,
       autoRemove: 'native'
     });
+    if (store && typeof store.on === 'function') {
+      store.on('error', (err) => {
+        logger.warn(`MongoStore session error: ${err.message}`);
+      });
+    }
+    sessionOptions.store = store;
   } catch (e) {
-    // MemoryStore fallback
+    logger.warn(`MongoStore initialization error: ${e.message}. Using in-memory session store.`);
   }
 }
 

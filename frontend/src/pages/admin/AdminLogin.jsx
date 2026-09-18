@@ -108,8 +108,8 @@ export default function AdminLogin() {
           </form>
 
           <div className="mt-6 p-3.5 rounded-xl bg-slate-900/80 border border-slate-800/80 text-xs text-slate-400 space-y-1">
-            <p className="font-semibold text-slate-300">Default Seeder Credentials:</p>
-            <p>Email: <span className="text-teal-400 font-mono">admin@portfolio.local</span></p>
+            <p className="font-semibold text-slate-300">Administrator Access Credentials:</p>
+            <p>Email: <span className="text-teal-400 font-mono">admin@portfolio.local</span> <span className="text-slate-500">or</span> <span className="text-teal-400 font-mono">anushkarao.cse@gmail.com</span></p>
             <p>Password: <span className="text-teal-400 font-mono">Admin@123456</span></p>
           </div>
 
