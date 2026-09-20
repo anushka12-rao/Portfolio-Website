@@ -25,6 +25,9 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 
+// Trust reverse proxy (required for Render and cloud hosting to handle secure cookies & rate limiting)
+app.set('trust proxy', 1);
+
 // Security headers
 app.use(
   helmet({
